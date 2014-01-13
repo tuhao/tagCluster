@@ -5,8 +5,6 @@ import org.apache.mahout.cf.taste.hadoop.item.RecommenderJob;
 import org.conan.mymahout.common.Constant;
 import org.conan.mymahout.hdfs.HdfsDAO;
 
-import com.ibm.icu.util.BytesTrie.Result;
-
 public class ItemCFHadoop {
 
     private static final String HDFS = "hdfs://10.65.110.31:9000";

@@ -12,15 +12,20 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.ReflectionUtils;
+import org.apache.mahout.clustering.iterator.ClusterWritable;
+import org.apache.mahout.math.VectorWritable;
 import org.conan.mymahout.recommendation.ItemCFHadoop;
 
 public class HdfsDAO {
 
-    private static final String HDFS = "hdfs://192.168.1.100:9000";
+    private static final String HDFS = "hdfs://10.65.110.31:9000";
 
     public HdfsDAO(Configuration conf) {
         this(HDFS, conf);
@@ -39,7 +44,7 @@ public class HdfsDAO {
         HdfsDAO hdfs = new HdfsDAO(conf);
 //        hdfs.copyFile("datafile/item.csv", "/tmp/new");
 //        hdfs.ls("/tmp/new");
-        String remote = HDFS + "/user/hdfs/userCF/result/part-r-00000";
+        String remote = HDFS + "/user/hdfs/mix_data/seeds/part-randomSeed";
         hdfs.sequenceRead(remote);
     }        
     
@@ -138,11 +143,12 @@ public class HdfsDAO {
 			path = new Path(remote);
 			reader = new SequenceFile.Reader(fs, path, conf);
 			Writable key = (Writable)ReflectionUtils.newInstance(reader.getKeyClass(), conf);
-			Writable value = (Writable)ReflectionUtils.newInstance(reader.getValueClass(), conf);
+			ClusterWritable value = (ClusterWritable)ReflectionUtils.newInstance(reader.getValueClass(), conf);
 			long position = reader.getPosition();
 			while (reader.next(key, value)){
-				String syncSeen = reader.syncSeen() ? "*" : "";  
-                System.out.printf("[%s%s]\t%s\t%s\n", position, syncSeen, key, value);  
+				
+				String syncSeen = reader.syncSeen() ? "*" : ""; 
+                System.out.printf("[%s %s]\t%s\t%s\n", position, syncSeen, key, value.getValue());  
                 position = reader.getPosition(); // beginning of next record  
 			}
 	    	

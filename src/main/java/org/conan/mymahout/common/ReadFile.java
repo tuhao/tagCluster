@@ -64,63 +64,6 @@ public class ReadFile {
 		return result;
 	}
 	
-	@Deprecated
-	public static Map<String,Integer> readMapStringInteger(String filename,String charset){
-		Map<String,Integer> map = new HashMap<String, Integer>();
-		FileInputStream fis = null;
-		InputStreamReader in = null;
-		BufferedReader br = null;
-		String line = null;
-		try {
-			fis = new FileInputStream(filename);
-			in = new InputStreamReader(fis,charset);
-			br = new BufferedReader(in);
-			while ((line = br.readLine()) != null){
-				String[] temp = line.replace("\"","").split(",");
-				try{
-					map.put(temp[0], Integer.parseInt(temp[1]));
-				}catch (NumberFormatException e) {
-					// TODO: handle exception
-				}
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			if (fis != null){
-				try {
-					fis.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if (in != null){
-				try {
-					in.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if (br != null){
-				try {
-					br.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		return map;
-	}
-	
 	public static Map<String,Integer> readMapIntegerStringProcess(String filename,String charset){
 		Map<String,Integer> map = new HashMap<String, Integer>();
 		FileInputStream fis = null;
@@ -183,7 +126,7 @@ public class ReadFile {
 		return map;
 	}
 	
-	@Deprecated
+	
 	public static Map<Integer,String> readHashcodeMap(String filename,String charset){
 		Map<Integer,String> map = new HashMap<Integer, String>();
 		FileInputStream fis = null;

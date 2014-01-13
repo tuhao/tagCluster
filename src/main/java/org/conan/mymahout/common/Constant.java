@@ -16,6 +16,10 @@ public class Constant {
 	
 	public final static String USER_TAGS_RECOMMEND_HASHCODE_RESULT = "datafile/recommend_hashcode_result.txt";
 	
+	public final static String KMEANS_INPUT = "datafile/kmeans_input.txt";
+	
+	public final static String USER_TAG_PAIR = "datafile/user_tag_pair.txt";
+	
 	public final static String USER_TAGS_RECOMMEND_RESULT = "datafile/recommend_result.txt";
 	
 	
