@@ -6,4 +6,8 @@
     <name>mapred.job.tracker</name>
     <value>hdfs://master:9001</value>
   </property>
+  <property>
+  	<name>mapred.userlog.retain.hours</name>
+  	<value>12</value>
+  	</property>
 </configuration>

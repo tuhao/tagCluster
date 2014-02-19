@@ -1,6 +1,9 @@
 package org.conan.mymahout.hdfs;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,10 +45,17 @@ public class HdfsDAO {
     public static void main(String[] args) throws IOException {
         JobConf conf = config();
         HdfsDAO hdfs = new HdfsDAO(conf);
-//        hdfs.copyFile("datafile/item.csv", "/tmp/new");
-//        hdfs.ls("/tmp/new");
-        String remote = HDFS + "/user/hdfs/mix_data/seeds/part-randomSeed";
-        hdfs.sequenceRead(remote);
+//        String inPath = HDFS + "/user/hdfs/userCF";
+//        hdfs.rmr(inPath);
+//        hdfs.mkdirs(inPath);
+//        
+//        for(int i =1;i <=13;i++){
+//        	StringBuffer localPathFont = new StringBuffer("datafile/user_tags_score_part");
+//        	String localPath = localPathFont.append(i).append(".txt").toString();
+//        	hdfs.copyFile(localPath, inPath);
+//        }
+        String outputPath = "/user/hdfs/userCF_result";
+        hdfs.rmr(outputPath);
     }        
     
     public static JobConf config(){
@@ -133,6 +143,32 @@ public class HdfsDAO {
           }
     }
     
+    public void read(String remoteFile){
+        Path path = new Path(remoteFile);
+        FileSystem fs = null;
+		try {
+			 fs = FileSystem.get(URI.create(hdfsPath), conf);
+			 BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(path)));
+		     String line = null;
+		     while((line = br.readLine()) != null){
+		        System.out.println(line);
+		     }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			try {
+				if(fs != null){
+					fs.close();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+       
+    }
+    
     public List<String> sequenceRead(String remote){
     	List<String> result= new LinkedList<String>();
     	FileSystem fs = null;
@@ -146,7 +182,6 @@ public class HdfsDAO {
 			ClusterWritable value = (ClusterWritable)ReflectionUtils.newInstance(reader.getValueClass(), conf);
 			long position = reader.getPosition();
 			while (reader.next(key, value)){
-				
 				String syncSeen = reader.syncSeen() ? "*" : ""; 
                 System.out.printf("[%s %s]\t%s\t%s\n", position, syncSeen, key, value.getValue());  
                 position = reader.getPosition(); // beginning of next record  
@@ -160,9 +195,7 @@ public class HdfsDAO {
 				IOUtils.closeStream(reader);
 			}
 		}
-    	
     	return result;
-    	
     }
 
     public void location() throws IOException {

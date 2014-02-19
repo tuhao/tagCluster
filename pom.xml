@@ -38,5 +38,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+		<groupId>oracle.jdbc.driver</groupId>
+		<artifactId>ojdbc</artifactId>
+		<version>6</version>
+		<scope>system</scope>
+		<systemPath>${project.basedir}/libs/ojdbc6.jar</systemPath>
+		</dependency>
 	</dependencies>
 </project>

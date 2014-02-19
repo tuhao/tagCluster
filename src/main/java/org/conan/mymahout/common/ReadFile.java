@@ -64,6 +64,74 @@ public class ReadFile {
 		return result;
 	}
 	
+	public static Map<String,Integer> clusteSimilarTagProcess(String filename,String charset,List<String> itemWordList){
+		Map<String,Integer> map = new HashMap<String, Integer>();
+		FileInputStream fis = null;
+		InputStreamReader in = null;
+		BufferedReader br = null;
+		String line = null;
+		try {
+			fis = new FileInputStream(filename);
+			in = new InputStreamReader(fis,charset);
+			br = new BufferedReader(in);
+			while ((line = br.readLine()) != null){
+				String[] temp = line.replace("\"","").split(",");
+				try{
+					String keyword = Simplify.toSimple(temp[0]);
+					keyword = keyword.toLowerCase();
+					for(String itemWord : itemWordList){
+						if(keyword.contains(itemWord)){
+							keyword = itemWord;
+							break;
+						}
+					}
+					if (map.get(keyword) == null){
+						map.put(keyword, Integer.parseInt(temp[1]));
+					}else{
+						map.put(keyword, Integer.parseInt(temp[1]) + map.get(keyword));
+					}
+				}catch (NumberFormatException e) {
+					// TODO: handle exception
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if (fis != null){
+				try {
+					fis.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (in != null){
+				try {
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (br != null){
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
 	public static Map<String,Integer> readMapIntegerStringProcess(String filename,String charset){
 		Map<String,Integer> map = new HashMap<String, Integer>();
 		FileInputStream fis = null;
@@ -177,7 +245,66 @@ public class ReadFile {
 			}
 		}
 		return map;
-		
+	}
+	
+	public static Map<Integer,String> clusteSimilarTagHashcodeMap(String filename,String charset,List<String> itemWords){
+		Map<Integer,String> map = new HashMap<Integer, String>();
+		FileInputStream fis = null;
+		InputStreamReader in = null;
+		BufferedReader br = null;
+		String line = null;
+		try {
+			fis = new FileInputStream(filename);
+			in = new InputStreamReader(fis,charset);
+			br = new BufferedReader(in);
+			while ((line = br.readLine()) != null){
+				String[] temp = line.replace("\"","").split(",");
+				String tag = Simplify.toSimple(temp[0]);
+				tag = tag.toLowerCase();
+				for(String keyword:itemWords){
+					if(tag.contains(keyword)){
+						tag = keyword;
+						break;
+					}
+				}
+				map.put(tag.hashCode(), tag);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if (fis != null){
+				try {
+					fis.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (in != null){
+				try {
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (br != null){
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
 	}
 	
 	public static Map<Integer,String> readHashcodeMapProcess(String filename,String charset){

@@ -1,5 +1,6 @@
 package org.conan.mymahout.recommendation;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -65,19 +66,25 @@ public class CFGenerate {
 		min = new BigDecimal(strMin);
 		max = new BigDecimal(strMax);
 		range = max.subtract(min);
+		System.out.println("max:" + max.doubleValue());
+		System.out.println("min:" + min.doubleValue());
 	}
 	
 	private static double distance(double sim){
-		BigDecimal divide = new BigDecimal(sim + 0.0001);
-		return (one.divide(divide,4,RoundingMode.CEILING)).subtract(one).doubleValue();
+		BigDecimal divide = new BigDecimal(sim + min.doubleValue());
+		return (one.divide(divide,3,RoundingMode.HALF_UP)).subtract(one).doubleValue();
 	}
 	
 	private static double specificate(double score){
 		BigDecimal para = new BigDecimal(score);
-		return distance(para.subtract(min).divide(range, 4, RoundingMode.CEILING).doubleValue());
+		return distance(para.subtract(min).divide(range, 3, RoundingMode.HALF_UP).doubleValue());
 	}
 	
 	public static void generate(){
+		File file = new File(Constant.KMEANS_INPUT);
+		file.delete();
+		file = new File(Constant.USER_TAG_PAIR);
+		file.delete();
 		List<String> itemWordsHash = ReadFile.readByLine(Constant.ITEM_FILE, "utf-8");
 		String[] itemsHashs = new String[itemWordsHash.size()];
 		itemWordsHash.toArray(itemsHashs);
@@ -89,11 +96,11 @@ public class CFGenerate {
 			String strScore = null;
 			StringBuffer userValue = new StringBuffer();
 			for(String hash:itemsHashs){
-				strScore = scoreMap.get(hash) == null ? "0" : scoreMap.get(hash);
+				strScore = scoreMap.get(hash) == null ? String.valueOf(min.doubleValue()) : scoreMap.get(hash);
 				try{
 					double value = specificate(Double.parseDouble(strScore));
-					WriteFile.writeFile(Constant.KMEANS_INPUT,value + "\t");
-					userValue.append(value).append("\t");
+					WriteFile.writeFile(Constant.KMEANS_INPUT,value + " ");
+					userValue.append(value).append(" ");
 				}catch(NumberFormatException e){
 					
 				}
@@ -106,6 +113,8 @@ public class CFGenerate {
 	
 	public static void main(String[] args){
 		generate();
+		
+//		System.out.println(distance(0.1));
 	}
 
 }
